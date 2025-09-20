@@ -1,14 +1,14 @@
 <?php
 session_start();
 require('credentials.php');
-$nomePagina = 'Note';
+$nomePagina = 'Assegnazione';
 
 
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <?php require('./header.php');
-
+require('navigation.php');
 ?>
 
 <body>
@@ -52,24 +52,23 @@ $nomePagina = 'Note';
             background-color: #128C7E; /* Colore al passaggio del mouse */
             color: white;
         }
-
   </style>
   <?php
 
   require('./Connection.php');
   require('./function.php');
   if (isset($_SESSION['username'])) {
-    require('./navigation.php');
+    //require('./navigation.php');
     $con = new Connection($host, $dbName, $dbUser, $dbPassword);
     $con->connect();
   ?>
 
     <div class="container mt-6">
-      <h1 id="title" class="text-center">Modifica Note Territorio</h1>
+      <h1 id="title" class="text-center">Assegna Territorio</h1>
       <div class="user-card">
 
 
-        <form class="d-flex mt-3" role="search" action="note.php" id="filtroNome" method="post">
+        <form class="d-flex mt-3" role="search" action="assegna.php" id="filtroNome" method="post">
           <input class="form-control me-2" name="chiave" type="search" placeholder="Inserisci numero o nome" aria-label="Cerca" />
           <button class="btn btn-outline-success" type="submit">Cerca</button>
         </form>
@@ -77,7 +76,7 @@ $nomePagina = 'Note';
             <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708" />
           </svg></button>
         <div id="myDiv">
-          <form action="note.php" id="filtro" method="post" class="mt-2 w-100 ">
+          <form action="assegna.php" id="filtro" method="post" class="mt-2 w-100 ">
 
             <div class="d-flex flex-row">
               <div class="d-flex flex-column justify-content-between w-50">
@@ -135,7 +134,7 @@ $nomePagina = 'Note';
 
       <?php
 
-      $querybase = "SELECT * FROM stato WHERE '0' = '0'";
+      $querybase = "SELECT * FROM stato WHERE fuori = '0' ";
       $plusL = "zona = 'Lariano'";
       $plusR = "zona = 'Rc. Mas'";
       $plusV = "zona = 'Velletri'";
@@ -169,37 +168,26 @@ $nomePagina = 'Note';
         $querybase = $querybase . "AND " . $plusG;
         ++$controller;
       }
-
-
-
-
       if (isset($_POST['chiave'])) {
-        
+
 
         if (substr($_POST['chiave'], 0, 1) == ":" || substr($_POST['chiave'], 0, 3) == "via") {
-          $querybase = "SELECT * FROM stato WHERE infoAgg like '%" .  substr($_POST['chiave'], 1, strlen($_POST['chiave'])) . "%'";
+          $querybase = "SELECT * FROM stato WHERE fuori = '0' AND infoAgg like '%" .  substr($_POST['chiave'], 1, strlen($_POST['chiave'])) . "%'";
         } else {
-          $querybase = "SELECT * FROM stato WHERE nome like '" . $_POST['chiave'] . "%' OR cognome like'" . $_POST['chiave'] . "%' OR nomeTer like'" . $_POST['chiave'] . "%'";
+          $querybase = "SELECT * FROM stato WHERE fuori = '0' AND nome like '" . $_POST['chiave'] . "%' OR fuori = '0' AND cognome like'" . $_POST['chiave'] . "%'";
         }
       }
+      if (isset($_POST['chiave']) && intval($_POST['chiave']) != 0) {
+        $querybase = "SELECT * FROM stato WHERE fuori = '0' AND id='" . $_POST['chiave'] . "'";
+      }
+      if (isset($_POST['o']) && $_POST['o'] == "si") {
 
-      
-    if (isset($_POST['chiave'])) {
-        if (substr($_POST['chiave'], 0, 1) == ":" || substr($_SESSION['key'], 0, 3) == "via") {
-          $querybase = "SELECT * FROM stato WHERE  infoAgg like '%" .  substr($_SESSION['key'], 1, strlen($_SESSION['key'])) . "%'";
-        } else {
-          $querybase = "SELECT * FROM stato WHERE  nome like '" . $_POST['chiave']. "%' OR cognome like'" . $_POST['chiave']. "%' OR nomeTer like'" . $_POST['chiave'] . "%'";
-        } 
-    }
-    if (isset($_POST['chiave']) && intval($_POST['chiave']) != 0) {
-        $querybase = "SELECT * FROM stato WHERE  nomeTer='" . $_POST['chiave'] . "'";
-    } 
-    if(!isset($_POST['chiave'])){
         $querybase = $querybase . "  ORDER BY id ASC";
         ++$controller;
-    }
-      
-    
+      } else {
+        $querybase = $querybase . " ORDER BY data ASC";
+      }
+
       // Simulazione di dati provenienti da un database o da un array
       $utenti = $con->fetchAll($querybase);
       if (count($utenti) == 0) {
@@ -207,51 +195,98 @@ $nomePagina = 'Note';
       
       ";
         echo '
-      <form action="note.php" id="filtro" method="post" class="mt-2 w-100 ">
+      <form action="assegna.php" id="filtro" method="post" class="mt-2 w-100 ">
         <button class="btn btn-outline-success d-flex justify-content-around w-100 text-center" type="submit">Vedi tutti i territori</button>
       </form>
       ';
       }
-      foreach($utenti as $utente){
-            echo "
-            <div class=\"card w-100 mb-5\">
-            <img src=\"./img/".$utente['nomeTer'].".jpg\" class=\"card-img-top\" alt=\"...\">
-            <div class=\"card-body\">
-                <h5 class=\"card-title\">".$utente['nomeTer']."</h5>
-                <p id=\"textToCopy\" class=\"card-text\"><strong>".note($utente['note'])."</strong></p>
-                
-                <button class=\"btn btn-primary\" onclick=\"copyText()\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" fill=\"white\" class=\"bi bi-copy\" viewBox=\"0 0 16 16\">
-                  <path fill-rule=\"evenodd\" d=\"M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z\"/>
-                </svg></button>
-                <a href=\"modificaNote.php?info=".$utente['id']."\" class=\"btn btn-primary\">Modifica Note</a>
-            </div>
-            </div>
-            ";
+      foreach ($utenti as $utente) {
+        $id = $utente['id'];
+        $nomeTer = $utente['nomeTer'];
+        $nome = $utente['nome'];
+        $cognome = $utente['cognome'];
+        $data = $utente['data'];
+        $zona = $utente['zona'];
+        $infoAgg = $utente['infoAgg'];
+        echo '<div class="user-card" data-user-id="' . $id . '">';
+        echo '    <div class="user-top">';
+        echo '      <div class="user-data">';
+        echo '        <div class="badge-number">' . $nomeTer . '</div>';
+        echo '        <div>';
+        echo '          <div><strong>' . $nome . ' ' . $cognome . '</strong></div>';
+        echo '          <div class="user-info">Rientrato: ' . convertToEuropean($data) . '</div>';
+        echo '          <div class="user-location">' . $zona . '</div>';
 
-      }
-    ?>
+        echo '        </div>';
+        echo '      </div>';
+
+        echo '      <div class="user-actions">';
+        echo '        <button onclick="toggleDiv(' . $id . ')">';
+        echo '          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">';
+        echo '            <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />';
+        echo '            <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8-5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />';
+        echo '          </svg>';
+        echo '        </button>';
+        echo '        <button class="show-panel-button" data-action="upload">';
+        echo '          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">';
+        echo '            <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1M6.354 9.854a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 8.707V12.5a.5.5 0 0 1-1 0V8.707z" />';
+        echo '          </svg>';
+        echo '        </button>';
+        echo '      </div>';
+        echo '    </div>';
+        echo '<p class="text-secondary vie">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+                      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"></path>
+                      <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"></path>
+                    </svg> ' . $infoAgg . ' 
+      </p>';
+        echo "      
+  
+      <div id=\"" . $id . "\" class=\"content1\">
+      <img src=\"./img/" . $nomeTer . ".jpg\" class=\"w-100\" alt=\"\"> 
+
+      <button onclick=\"closeDiv(" . $id . ")\">Chiudi</button>
+      </div>
+   ";
+        echo '    <div class="user-details-panel" id="details-' . $id . '" style="display: none;">';
+        $info = '<p class="align-items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle" viewBox="0 0 16 16">
+  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"></path>
+  <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0"></path>
+</svg>  Nel caso la data non venisse impostata verra salvata la data di oggi
+            </p>';
+        echo "
+
+    <form action=\"assegnaEngine.php\" method=\"post\">
     
-    <script>
-      function copyText() {
-        // recupera solo il testo, senza HTML
-        const text = document.getElementById("textToCopy").innerText;
+      <h2 class=\"text-center mb-2 mt-2 \">A chi vuoi assegnarlo?</h2>
+      <input type=\"text\" class=\"form-control mb-3\" id=\"formGroupExampleInput\" name=\"nome\" placeholder=\"Nome\" required>
+      <input type=\"text\" class=\"form-control mb-3\" id=\"formGroupExampleInput\" name=\"cognome\" placeholder=\"Cognome\" required>
+      <div class=\"form-group mb-3\">
+          <input class=\"form-control\" type=\"date\" id=\"dateStandard\" name=\"data\">
+      </div>
+      <input type=\"hidden\" value=\"$id\" name=\"id\">
+      $info
+      
 
-        // metodo moderno
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text).then(() => {
-            alert("Copiato: " + text);
-          });
-        } else {
-          // fallback per browser vecchi
-          const tmp = document.createElement("textarea");
-          tmp.value = text;
-          document.body.appendChild(tmp);
-          tmp.select();
-          document.execCommand("copy");
-          document.body.removeChild(tmp);
-          alert("Copiato: " + text);
-        }
+
+
+      <button type=\"submit\" class=\"btn btn-secondary\">Assegna</button>
+
+    </form>
+
+
+    ";
+
+
+        echo '</div>';
+        echo '</div>';
       }
+
+      ?>
+    </div>
+
+    <script>
       let i = true;
 
       function nascondiVie() {
@@ -338,12 +373,10 @@ $nomePagina = 'Note';
 
     <?php
     if (isset($_SESSION['just-assegn'])) {
-      $messaggio = "```\nTerritorio n:".$_SESSION['nomeTer'] ."\nVedi piantina: ".$_SESSION['just-assegn'] ."";
-      if($_SESSION['note']!=NULL){
-        $messaggio = $messaggio.note($_SESSION['note']);
-      }
-      $messaggio = $messaggio."```";
-      $messaggio = urlencode($messaggio);
+      $messaggio = "
+      Territorio n:".$_SESSION['nomeTer'] ."
+      Vedi piantina: ".$_SESSION['just-assegn'] ."
+      ";
       echo '
     <div class="modal fade" id="myCenteredModal" tabindex="-1" aria-labelledby="myCenteredModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">

@@ -40,6 +40,9 @@ require('./function.php');
         display: none;
 
     }
+    .w-alert{
+        width: 2rem;
+    }
 </style>
 
 <body>
@@ -91,7 +94,7 @@ require('./function.php');
                 $con = new Connection($host, $dbName, $dbUser, $dbPassword);
                 $con->connect();
                 if (isset($_SESSION['ricercaStoria'])) {
-                    $_POST['id'] = $_SESSION['ricercaStoria'];
+                    $id= $_SESSION['ricercaStoria'];
                     $_SESSION['ricercaStoria'] = null;
         ?>
                     <script>
@@ -111,10 +114,15 @@ require('./function.php');
                     </script>
                     <?php
                 }
-                if (isset($_POST['id'])) {
-
+                if (isset($_POST['id']) ||isset($_GET['id'])) {
+                    $id = "";
+                    if(isset($_POST['id'])){
+                        $id= $_POST['id'];
+                    }elseif(isset($_GET['id'])){
+                        $id= $_GET['id'];
+                    }
                     $nTer = 0;
-                    if (!$row = $con->fetchAll("SELECT * FROM `uscite` WHERE id= " . $_POST['id'] . " ORDER BY data ASC")) {
+                    if (!$row = $con->fetchAll("SELECT * FROM `uscite` WHERE id= " . $id . " ORDER BY data ASC")) {
                     ?>
                         <script>
                             document.getElementById("avviso").style.display = "flex";
@@ -128,7 +136,7 @@ require('./function.php');
 
 
                         echo "
-                        <h1 class=\"text-center  mt-3\">N." . $_POST['id'] . "</h1>
+                        <h1 class=\"text-center  mt-3\">N." . $id . "</h1>
                         <table class=\"table table-striped-columns\">
                         <thead>
                             <tr>
@@ -143,12 +151,15 @@ require('./function.php');
                     $index = 0;
                     $ultimaUscita;
                     $ultimoRientro;
-                    $queryuscite = $con->getConn()->prepare("SELECT * FROM `uscite` WHERE id= " . $_POST['id'] . " ORDER BY data ASC");
-                    $queryentrate =  $con->getConn()->prepare("SELECT * FROM `rientrate` WHERE id = " . $_POST['id'] . " ORDER BY data ASC");
+                    $queryuscite = $con->getConn()->prepare("SELECT * FROM `uscite` WHERE id= " . $id. " ORDER BY data ASC");
+                    $queryentrate =  $con->getConn()->prepare("SELECT * FROM `rientrate` WHERE id = " . $id. " ORDER BY data ASC");
                     $queryuscite->execute([]);
                     $queryentrate->execute([]);
+                    $comprensivo = [];
                     while ($row = $queryuscite->fetch(PDO::FETCH_ASSOC)) {
                         $row1 = $queryentrate->fetch(PDO::FETCH_ASSOC);
+                        array_push($comprensivo,$row['id_record']);
+                        array_push($comprensivo,$row1['id_record']);
                     ?>
                         <script>
                             function close() {
@@ -174,8 +185,16 @@ require('./function.php');
                             </td>
                             
                             <div class=\"closed p-4 rounded\" id= \"" . $index . "\">
+                                <div class=\"alert alert-primary d-flex align-items-center\" role=\"alert\">
+                                <svg xmlns=\"http://www.w3.org/2000/svg\" class=\"bi w-alert me-2\" viewBox=\"0 0 16 16\" role=\"img\" aria-label=\"Warning:\">
+                                    <path d=\"M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z\"/>
+                                </svg>
+                                <div>
+                                    Attenzione se cancelli questa uscita del territorio verrà cancellato anche il suo rientro  
+                                </div>
+                                </div>
                            
-                                <form class=\"form-mod\"  action=\"updateStoria.php?vecchioNome=" . $row['nome'] . "&vecchioCognome=" . $row['cognome'] . "&vecchiaData=" . $row['data']. "& id=" . $row['id'] . "& mode=1\" method=\"POST\">
+                                <form class=\"form-mod\"  action=\"updateStoria.php?vecchioNome=" . $row['nome'] . "&vecchioCognome=" . $row['cognome'] . "&vecchiaData=" . $row['data']. "& id=" . $row['id'] . "& mode=1 & id_record=".$row['id_record']."\" method=\"POST\">
                                 
                                     <h4>Nel caso non venisse impostato il nome, quest ultimo rimarra lo stesso di prima</h4>
                                     <input class=\"form-control me-2 mt-3\" placeholder=\"" . $row['nome'] . "\" name=\"nome\" type=\"search\" aria-label=\"Cerca\" />
@@ -186,7 +205,9 @@ require('./function.php');
                                     </div>
                                     <div class=\"d-flex flex-row justify-content-around mt-3 mb-3\">
                                         
+                                       
                                         <button type=\"submit\" class=\"btn btn-success\">Modifica</button>
+                                        <a href=\"updateStoria.php?mode=2 &fuori=1& id_record=".$row['id_record']."\"><button type=\"button\" class=\"btn btn-outline-danger\">Elimina Record</button></a>
                                         <button type=\"button\" onclick=\"op(" . $index . ")\" class=\"btn btn-outline-success\">Esci</button>
                                         
                                         
@@ -210,8 +231,15 @@ require('./function.php');
                                 <td>//</td>
                                 <td><button class=\"btn btn-outline-success\" value=\"Modifica\" onclick=\"op($index)\">Modifica</button></td>
                                 <div class=\"closed p-4 rounded\" id= \"" . $index . "\">
-                                
-                                    <form class=\"form-mod\" action=\"updateStoria.php?vecchiaData=" . $row1['data'] . " & id=" . $row1['id'] . " & mode=0 \" method=\"POST\">
+                                                                <div class=\"alert alert-primary d-flex align-items-center\" role=\"alert\">
+                                <svg xmlns=\"http://www.w3.org/2000/svg\" class=\"bi w-alert me-2\" viewBox=\"0 0 16 16\" role=\"img\" aria-label=\"Warning:\">
+                                    <path d=\"M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z\"/>
+                                </svg>
+                                <div>
+                                    Attenzione se cancelli questo rientro del territorio verrà cancellata anche la sua uscita
+                                </div>
+                                </div>
+                                    <form class=\"form-mod\" action=\"updateStoria.php?vecchiaData=" . $row1['data'] . " & id=" . $row1['id'] . " & mode=0 &id_record=".$row1['id_record']."\" method=\"POST\">
                                     <h4>Inserisci una nuova data</h4>
                                     <div class=\"form-group mt-3\">
                                         <input class=\"form-control\" type=\"date\" id=\"dateStandard\" REQUIRED name=\"data\">
@@ -219,6 +247,8 @@ require('./function.php');
                                     <div class=\"d-flex flex-row justify-content-around mt-3 mb-3\">
                                         
                                         <button type=\"submit\" class=\"btn btn-success\">Modifica</button>
+                                        <a href=\"updateStoria.php?mode=2 &fuori=0&id_record=".$row1['id_record']."\"><button type=\"button\" class=\"btn btn-outline-danger\">Elimina Record</button></a>
+
                                         <button type=\"button\" onclick=\"op(" . $index . ")\" class=\"btn btn-outline-success\">Esci</button>
                                         
                                         
@@ -236,6 +266,8 @@ require('./function.php');
                     //mi faccio dare l'ultimo rientro e l'ultima uscita che ha avuto il territorio 
                     $_SESSION['ultimaUscita'] = $ultimaUscita;
                     $_SESSION['ultimoRientro'] = $ultimoRientro;
+                    $_SESSION['comp']= $comprensivo;
+                    
                     echo '<a class="btn btn-outline-success d-flex justify-content-around w-75 m-auto mb-3 " href="./storia.php">Ricarica Pagina</a>';
                     
                 }

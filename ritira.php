@@ -300,15 +300,19 @@ require('navigation.php');
                 let str= "";
                 let c= false;
                 for(let i = 0; i<array.length;++i ){
+                    
                     if(array[i]==true){
                         c= true;
                         str = str+"<li class=\"list-group-item text-center\">"+ i+"</li>";
                     }
+                    console.log(array);
                 }
-                if(c= true){
-                    str= str+"<form action=\"\"><input class=\"btn bg-warning  mt-2 w-100\" type=\"button\" value=\"Ritira\"><input type=\"hidden\" value=\"" +t2(sele)+"\"></form>";
+                if(c==true){
+                    str= str+"<form method=\"POST\" action=\"ritiraEngine.php\"><input class=\"btn bg-warning  mt-2 w-100\" type=\"submit\" value=\"Ritira\"><input name=\"infos\" type=\"hidden\" value=\"" +t2(sele)+"\"></form>";
 
                 }
+                
+
                 return str;
             }
 
@@ -331,7 +335,7 @@ require('navigation.php');
             }
             
         </script>
-        <ul class="list-group fixed-bottom start-0 p-3 w-25" id="contenitoree">
+        <ul class="list-group fixed-bottom right-0  p-3 w-50" id="contenitoree">
 
         </ul>
         <a href="#title" style="display: flex;position:fixed;bottom:1rem;right:1rem;width:30px;height:30px;background-color:green;border-radius:50%;">

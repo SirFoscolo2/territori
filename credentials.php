@@ -1,6 +1,6 @@
 <?php
 
-    $host = "localhost"; 
-    $dbName= "territori";
-    $dbUser = "root";
-    $dbPassword= "";
+    $host="127.0.0.1";
+    $dbName="territori";
+    $dbUser="sir";
+    $dbPassword="sirFonti";
