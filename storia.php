@@ -177,7 +177,7 @@ require('./function.php');
                         echo "
                         <tr>
                             
-                            <td>Uscito:" . convertToEuropean($row['data']) . "</td>
+                            <td>Uscito:" . convertToEuropean($row['data']) . " -> <i>(".$row['id_record'].")</i></td>
                             <td>" . $row['nome'] . " " . $row['cognome'] . "</td>
                             <td><button class=\"btn btn-outline-success\" onclick=\"op(" . $index . ")\" value=\"Modifica\"  >Modifica</button> 
 
@@ -207,7 +207,7 @@ require('./function.php');
                                         
                                        
                                         <button type=\"submit\" class=\"btn btn-success\">Modifica</button>
-                                        <a href=\"updateStoria.php?mode=2 &fuori=1& id_record=".$row['id_record']."\"><button type=\"button\" class=\"btn btn-outline-danger\">Elimina Record</button></a>
+                                        <a href=\"updateStoria.php?mode=2 &fuori=1& id_record=".$row['id_record']."&id=".$row['id']."\"><button type=\"button\" class=\"btn btn-outline-danger\">Elimina Record</button></a>
                                         <button type=\"button\" onclick=\"op(" . $index . ")\" class=\"btn btn-outline-success\">Esci</button>
                                         
                                         
@@ -227,7 +227,7 @@ require('./function.php');
                             echo "                        
                             <tr>
                                 
-                                <td>Rientrato:" . convertToEuropean($row1['data']) . "</td>
+                                <td>Rientrato:" . convertToEuropean($row1['data']) . " -> <i>(".$row1['id_record'].")</i></td>
                                 <td>//</td>
                                 <td><button class=\"btn btn-outline-success\" value=\"Modifica\" onclick=\"op($index)\">Modifica</button></td>
                                 <div class=\"closed p-4 rounded\" id= \"" . $index . "\">
@@ -247,7 +247,7 @@ require('./function.php');
                                     <div class=\"d-flex flex-row justify-content-around mt-3 mb-3\">
                                         
                                         <button type=\"submit\" class=\"btn btn-success\">Modifica</button>
-                                        <a href=\"updateStoria.php?mode=2 &fuori=0&id_record=".$row1['id_record']."\"><button type=\"button\" class=\"btn btn-outline-danger\">Elimina Record</button></a>
+                                        <a href=\"updateStoria.php?mode=2 &fuori=0&id_record=".$row1['id_record']."&id=".$row1['id']."\"><button type=\"button\" class=\"btn btn-outline-danger\">Elimina Record</button></a>
 
                                         <button type=\"button\" onclick=\"op(" . $index . ")\" class=\"btn btn-outline-success\">Esci</button>
                                         
