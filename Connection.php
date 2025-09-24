@@ -29,7 +29,15 @@ class Connection {
         $stm->execute($params);
         return $stm;
     }
-
+    public function beginTransaction(){
+        $this->conn->beginTransaction();
+    }
+        public function commit(){
+        $this->conn->commit();
+    }
+    public function rollBack(){
+        $this->conn->rollBack();
+    }
     public function fetchAll($sql, $params = []) {
         return $this->query($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
     }

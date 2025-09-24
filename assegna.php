@@ -9,6 +9,10 @@ $nomePagina = 'Assegnazione';
 <html lang="en">
 <?php require('./header.php');
 require('navigation.php');
+if(isset($_GET['del'])){
+  unset($_SESSION['key']);
+  unset($_GET['del']);
+}
 ?>
 
 <body>
@@ -225,14 +229,11 @@ require('navigation.php');
       $utenti = $con->fetchAll($querybase);
     
       if (count($utenti) == 0) {
+        unset($_SESSION['key']);
         echo "<h2 class=\"text-center\">Non trovo nulla di simile <strong>:(</strong></h2>
       
       ";
-        echo '
-      <form action="assegna.php" id="filtro" method="post" class="mt-2 w-100 ">
-        <button class="btn btn-outline-success d-flex justify-content-around w-100 text-center" type="submit">Vedi tutti i territori</button>
-      </form>
-      ';
+
       }
       
       foreach ($utenti as $utente) {
@@ -485,7 +486,10 @@ require('navigation.php');
 
 
   ?>
+  <form action="assegna.php?del=1" id="filtro" method="post" class="mt-2 w-75 m-auto">
+    <button class="btn btn-outline-success d-flex justify-content-around w-100 text-center" type="submit">Vedi tutti i territori</button>
 
+  </form>
 
 </body>
 

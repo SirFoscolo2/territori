@@ -1,13 +1,43 @@
 <?php session_start();
 require('./credentials.php');
+$nomePagina = 'Storico Territorio';
  ?>
 <!DOCTYPE html>
 <html lang="en">
 <?php require('header.php');
+
 require('./Connection.php');
 require('./function.php');
 ?>
 <style>
+    #ntbn {
+    position: fixed;
+    top: 6rem;
+    left: 6rem;
+    transform: translateX(-50%);
+    background: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-family: sans-serif;
+    font-size: 14px;
+    display: none;
+    z-index: 1000;
+    }
+
+    #ntbn .progress-bar {
+    height: 4px;
+    background: #4caf50;
+    margin-top: 6px;
+    border-radius: 4px;
+    animation: progress 1.5s linear forwards;
+    }
+
+    @keyframes progress {
+    from { width: 100%; }
+    to   { width: 0%; }
+    }
+
     .closed {
         display: none;
         flex-direction: column;
@@ -95,7 +125,7 @@ require('./function.php');
                 $con->connect();
                 if (isset($_SESSION['ricercaStoria'])) {
                     $id= $_SESSION['ricercaStoria'];
-                    $_SESSION['ricercaStoria'] = null;
+                    unset($_SESSION['ricercaStoria']);
         ?>
                     <script>
                         var progressBar = document.querySelector('.progress-bar');
@@ -115,7 +145,7 @@ require('./function.php');
                     <?php
                 }
                 if (isset($_POST['id']) ||isset($_GET['id'])) {
-                    $id = "";
+                    
                     if(isset($_POST['id'])){
                         $id= $_POST['id'];
                     }elseif(isset($_GET['id'])){
@@ -247,7 +277,7 @@ require('./function.php');
                                     <div class=\"d-flex flex-row justify-content-around mt-3 mb-3\">
                                         
                                         <button type=\"submit\" class=\"btn btn-success\">Modifica</button>
-                                        <a href=\"updateStoria.php?mode=2 &fuori=0&id_record=".$row1['id_record']."&id=".$row1['id']."\"><button type=\"button\" class=\"btn btn-outline-danger\">Elimina Record</button></a>
+                                        
 
                                         <button type=\"button\" onclick=\"op(" . $index . ")\" class=\"btn btn-outline-success\">Esci</button>
                                         

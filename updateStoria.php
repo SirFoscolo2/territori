@@ -5,7 +5,7 @@ require('./Connection.php');
 require('./function.php');
 $mode=$_GET['mode'];
 $id_record= $_GET['id_record'];
-
+$id = $_GET['id'];
 if($mode=="1"){
     $nnome = $_POST['nome'];
     $ncognome = $_POST['cognome'];
@@ -19,7 +19,7 @@ if($mode=="1"){
     //pulisco la variabile di sessione
     $_SESSION['ultimaUscita']="";
     
-    $id = $_GET['id'];
+    
     if(empty($nnome)){
         $nnome= $vnome;
     }
@@ -57,8 +57,8 @@ if($mode=="1"){
         $query->execute();
         
         $_SESSION['ricercaStoria']= $id;
-        
-        header("location: ./storia.php");
+
+        header("location: ./storia.php?id=$id");
         exit();
     } catch(PDOException $e) {
         echo "Errore: " . $e->getMessage();
@@ -95,7 +95,8 @@ if($mode=="1"){
         $query->bindParam(':id_record', $id_record);
         $query->execute();
         $_SESSION['ricercaStoria']= $id;
-        header("location: ./storia.php");
+
+        header("location: ./storia.php?id=$id");
         exit();
     } catch(PDOException $e) {
         echo "Errore: " . $e->getMessage();
@@ -113,60 +114,45 @@ if($mode=="1"){
         $id_record2= 0;
         $controllo=0;
         if($_GET['fuori']=="1"){//cancella uscita
-
+            
+            $con->beginTransaction();
             $query = $con->getConn()->prepare("Delete from `uscite` where `id_record`=:id_record");
             $query2_2= $con->getConn()->prepare("Delete from `rientrate` where `id_record`=:id_record2");
             $indice = array_search($id_record,$_SESSION['comp'])+1;
             $id_record2= $_SESSION['comp'][$indice];
-            echo "stai eliminando il record ".$id_record2. " che viene dopo del record ".$id_record;
-            echo "<br> "."Delete from `uscite` where `id_record`=".$id_record." Delete from `rientrate` where `id_record`=".$id_record2."";
+            //echo "stai eliminando il record ".$id_record2. " che viene dopo del record ".$id_record;
+            //echo "<br> "."Delete from `uscite` where `id_record`=".$id_record." Delete from `rientrate` where `id_record`=".$id_record2."";
 
-            //$query2_2->bindParam(':id_record2', $id_record2);
-            //$query2_2->execute();
+            $query2_2->bindParam(':id_record2', $id_record2);
+            $query2_2->execute();
 
 
 
 
 
             //controllo se quella che sto cancellando è lu'ultima uscita, controllo la data qui sotto VVVVV
-            echo "SELECT `id_record` FROM `uscite` where `id` =".$_GET['id']." order by data desc limit 1";
+            //echo "SELECT `id_record` FROM `uscite` where `id` =".$_GET['id']." order by data desc limit 1";
             $controlloModificaStato= $con->fetchAll("SELECT * FROM `uscite` where `id` =".$_GET['id']." order by data desc limit 1");
             $controlloModificaStatoRientro= $con->fetchAll("SELECT `id_record` FROM `rientrate` where `id` =".$_GET['id']." order by data desc limit 1");
 
-            echo "ID:".$_GET['id']."<br>";
-            echo "ID_record:".$id_record."<br>";
-            echo "ID_record2:".$id_record2."<br>";
-            echo "CONTROLLO ultimo record per il territorio ".$_GET['id'].": ".$controlloModificaStato[0]['id_record']."<br>";
-            echo "CONTROLLO ultimo record per il territorio precenete a eliminazione".$_GET['id'].": ".$controlloModificaStatoRientro[0]['id_record'];
+            //echo "ID:".$_GET['id']."<br>";
+            //echo "ID_record:".$id_record."<br>";
+            //echo "ID_record2:".$id_record2."<br>";
+            //echo "CONTROLLO ultimo record per il territorio ".$_GET['id'].": ".$controlloModificaStato[0]['id_record']."<br>";
+            //echo "CONTROLLO ultimo record per il territorio precenete a eliminazione".$_GET['id'].": ".$controlloModificaStatoRientro[0]['id_record'];
 
 
             if($controlloModificaStato[0]['id_record']==$id_record){
                 $dataUltimoRientro= $con->fetchOne("select `data` from `rientrate` where `id_record`= ".$controlloModificaStatoRientro[0]['id_record']."");
-                
-                echo "<br><br>"."UPDATE `stato` SET `fuori` = 0, `nome` = 'Non', `cognome` = 'Disponibile', `data` = '".$dataUltimoRientro['data']."' WHERE `id` = ".$_GET['id'];
-                //$con->query("UPDATE `stato` SET `fuori` = 0, `nome` = 'Non', `cognome` = 'Disponibile', `data` = '".$dataUltimoRientro['data']."' WHERE `id` = ".$_GET['id']);
-            }   
-
-
-
-
-        }elseif($_GET['fuori']=="0"){//cancella rientro
-            $controlloModificaStato= $con->fetchAll("SELECT * FROM `rientrate` where `id` =".$_GET['id']." order by data desc limit 1");
-            echo print_r($controlloModificaStato);
-            echo "<br> <br> ".$id_record;
-            if($controlloModificaStato[0]['id_record']==$id_record){
+                $prevData= $con->fetchAll("select `nome`,`cognome` from `uscite` where `id` =".$_GET['id']." ORDER BY data desc limit 2");
+                $nextMonth = date('Y-m-d', strtotime('+1 month', strtotime($dataUltimoRientro['data'])));
+                echo "<br><br>"."UPDATE `stato` SET `fuori` = 0, `nome` = '".$prevData[1]['nome']."', `cognome` = '".$prevData[1]['cognome']."', `data` = '".$dataUltimoRientro['data']."' `scadenza`='".$nextMonth."' WHERE `id` = ".$_GET['id'];
+                $con->query("UPDATE `stato` SET `fuori` = 0, `nome` = '".$prevData[1]['nome']."', `cognome` = '".$prevData[1]['cognome']."', `data` = '".$dataUltimoRientro['data']."', `scadenza`='".$nextMonth."' WHERE `id` = ".$_GET['id']);
                 $controllo=1;
-            }
-            $query = $con->getConn()->prepare("Delete from `rientrate` where `id_record`=:id_record");    
-            $query1_2= $con->getConn()->prepare("Delete from `uscite` where `id_record`=:id_record2");
-            $indice = array_search($id_record,$_SESSION['comp'])-1;
-            $id_record2= $_SESSION['comp'][$indice];
-
-            //echo "stai eliminando il record ".$id_record2. " che viene prima del record ".$id_record;
-            //echo "<br> "."Delete from `uscite` where `id_record`=".$id_record2." Delete from `rientrate` where `id_record`=".$id_record."";
-            $query1_2->bindParam(':id_record2', $id_record2);
-            $query1_2->execute();
-
+            }   
+            
+            $query->bindParam(':id_record', $id_record);
+            $query->execute();
         }
         //query controllo, prendo la data nello stato che sarà l'ultima data con cui si è interagito
         
@@ -174,22 +160,16 @@ if($mode=="1"){
    
         //se l'ultima data corrisponde a quella che sto modificando e il territorio è fuori, salvo in stato la data modificata 
         
-        $query->bindParam(':id_record', $id_record);
+       
 
-
-        $query->execute();
-        if($controllo==1){
-            $controlloModificaStatoAttuale= $con->fetchAll("SELECT * FROM `rientrate` where `id` =".$_GET['id']." order by data desc limit 1");
-            $controlloModificaStatoAttualeNome= $con->fetchAll("SELECT nome, cognome FROM `uscite` where `id` =".$_GET['id']." order by data desc limit 1");
-            $con->query("UPDATE `stato` SET `fuori` = 0, nome='".$controlloModificaStatoAttualeNome[0]['nome']."', cognome='".$controlloModificaStatoAttualeNome[0]['cognome']."' `data` = '".$controlloModificaStatoAttuale[0]['data']."' WHERE `id` = ".$_GET['id']);
-        }
         
         $_SESSION['ricercaStoria']= $id;
-        
-        //header("location: ./storia.php");
+        $con->commit();
+        header("location: ./storia.php?id=$id");
         exit();
-    } catch(PDOException $e) {
+    } catch(Exception $e) {
         echo "Errore: " . $e->getMessage();
+        $con->rollBack();
     }
 }
 
