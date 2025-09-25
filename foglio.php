@@ -137,21 +137,17 @@ if (isset($_SESSION['username'])) {
             $queryUscite = $con->getConn()->prepare("
                 SELECT u.id, u.nome, u.cognome, u.data AS uscita_data
                 FROM uscite u
-                WHERE u.id = :id AND u.data >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+                WHERE u.id = :id
                 ORDER BY u.data ASC
             ");
             $queryUscite->bindParam(':id', $i, PDO::PARAM_INT);
             $queryUscite->execute();
             $uscite = $queryUscite->fetchAll(PDO::FETCH_ASSOC);
-            if(isset($uscite[0]['uscita_data'])){
-                $primaUscita= $uscite[0]['uscita_data'];
-            }
-            
-            //echo $primaUscita;
+
             $queryRientri = $con->getConn()->prepare("
                 SELECT r.id, r.data AS rientro_data
                 FROM rientrate r
-                WHERE r.id = :id AND r.data>'".$primaUscita."'
+                WHERE r.id = :id
                 ORDER BY r.data ASC
             ");
             $queryRientri->bindParam(':id', $i, PDO::PARAM_INT);

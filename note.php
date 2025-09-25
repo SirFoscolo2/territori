@@ -64,7 +64,7 @@ $nomePagina = 'Note';
     $con->connect();
   ?>
 
-    <div class="container mt-6">
+    <div class="container mt-3">
       <h1 id="title" class="text-center">Modifica Note Territorio</h1>
       <div class="user-card">
 

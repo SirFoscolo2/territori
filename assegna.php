@@ -57,6 +57,7 @@ if(isset($_GET['del'])){
             color: white;
         }
   </style>
+  
   <?php
 
   require('./Connection.php');
@@ -67,7 +68,7 @@ if(isset($_GET['del'])){
     $con->connect();
   ?>
 
-    <div class="container mt-6">
+    <div class="container mt-3">
       <h1 id="title" class="text-center">Assegna Territorio</h1>
       <div class="user-card">
 
@@ -122,7 +123,7 @@ if(isset($_GET['del'])){
           </form>
 
 
-          <label class="switch" style="display: flex;position:fixed;bottom:4rem;right:1rem;">
+          <label class="switch" style="display: flex;position:fixed;bottom:5rem;right:1rem;">
             <input type="checkbox" onclick="nascondiVie()">
             <span class="slider"></span>
           </label>
@@ -257,16 +258,13 @@ if(isset($_GET['del'])){
         echo '      </div>';
 
         echo '      <div class="user-actions">';
-        echo '        <button onclick="toggleDiv(' . $id . ')">';
-        echo '          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">';
-        echo '            <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />';
-        echo '            <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8-5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />';
-        echo '          </svg>';
+        echo '        <button class="btn btn-secondary border"  onclick="toggleDiv(' . $id . ')">';
+        echo '          <i class="bi bi-geo-alt fs-5 text-primary"></i>';
+
         echo '        </button>';
-        echo '        <button class="show-panel-button" data-action="upload">';
-        echo '          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">';
-        echo '            <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1M6.354 9.854a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 8.707V12.5a.5.5 0 0 1-1 0V8.707z" />';
-        echo '          </svg>';
+        echo '        <button class=" btn btn-secondary border show-panel-button" data-action="upload">';
+        echo '          <i class="bi bi-link-45deg text-success fs-4"></i>';
+
         echo '        </button>';
         echo '      </div>';
         echo '    </div>';

@@ -1,0 +1,254 @@
+.stat-card {
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+.stat-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    background: rgba(0, 123, 255, 0.1);
+    color: #007bff;
+}
+
+.stat-value {
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.bg-sel {
+    background: rgba(0, 123, 255, 0.14);
+}
+
+.stat-label {
+    font-size: 15px;
+    color: #6c757d;
+}
+
+.stat-change {
+    font-size: 13px;
+    color: #28a745;
+}
+
+.stat-out {
+    font-size: 13px;
+    color: #a72828ff;
+}
+
+.action-card {
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+.action-btn {
+    flex: 1 1 45%;
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    background: #f8f9fa;
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+    background: #e9ecef;
+    transform: translateY(-2px);
+}
+
+.action-btn i {
+    font-size: 24px;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.action-label {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.welcome-title {
+    font-size: 1.8rem;
+    /* più piccolo */
+    font-weight: 600;
+    text-align: center;
+    background: linear-gradient(90deg, #0d6efd, #20c997);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+}
+
+.welcome-sub {
+    text-align: center;
+    color: #6c757d;
+    font-size: 1rem;
+    /* più piccolo anche il sottotitolo */
+}
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    /* attiva Flexbox */
+    justify-content: center;
+    /* centro orizzontale */
+    align-items: center;
+    /* top:0; right:0; bottom:0; left:0; */
+    background: #0000008c;
+    opacity: 1;
+
+    z-index: 9999;
+    transition: opacity 600ms ease;
+    /* durata della sfumatura */
+    pointer-events: auto;
+}
+
+/* classe che attiva la scomparsa (sfumata) */
+.overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* From Uiverse.io by dexter-st */
+.loader-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 180px;
+    height: 180px;
+    font-family: "Inter", sans-serif;
+    font-size: 1.2em;
+    font-weight: 300;
+    color: white;
+    border-radius: 50%;
+    background-color: transparent;
+    user-select: none;
+
+
+}
+
+.loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    background-color: transparent;
+    animation: loader-rotate 2s linear infinite;
+    z-index: 0;
+}
+
+@keyframes loader-rotate {
+    0% {
+        transform: rotate(90deg);
+        box-shadow:
+            0 10px 20px 0 #fff inset,
+            0 20px 30px 0 #5fff9c inset,
+            0 60px 60px 0 #211eec inset;
+    }
+
+    50% {
+        transform: rotate(270deg);
+        box-shadow:
+            0 10px 20px 0 #fff inset,
+            0 20px 10px 0 #0ad681 inset,
+            0 40px 60px 0 #1e2880 inset;
+    }
+
+    100% {
+        transform: rotate(450deg);
+        box-shadow:
+            0 10px 20px 0 #fff inset,
+            0 20px 30px 0 #0dbe42 inset,
+            0 60px 60px 0 #471eec inset;
+    }
+}
+
+.loader-letter {
+    display: inline-block;
+    opacity: 0.4;
+    transform: translateY(0);
+    animation: loader-letter-anim 2s infinite;
+    z-index: 1;
+    border-radius: 50ch;
+    border: none;
+}
+
+.loader-letter:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.loader-letter:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.loader-letter:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.loader-letter:nth-child(4) {
+    animation-delay: 0.3s;
+}
+
+.loader-letter:nth-child(5) {
+    animation-delay: 0.4s;
+}
+
+.loader-letter:nth-child(6) {
+    animation-delay: 0.5s;
+}
+
+.loader-letter:nth-child(7) {
+    animation-delay: 0.6s;
+}
+
+.loader-letter:nth-child(8) {
+    animation-delay: 0.7s;
+}
+
+.loader-letter:nth-child(9) {
+    animation-delay: 0.8s;
+}
+
+.loader-letter:nth-child(10) {
+    animation-delay: 0.9s;
+}
+
+@keyframes loader-letter-anim {
+
+    0%,
+    100% {
+        opacity: 0.4;
+        transform: translateY(0);
+    }
+
+    20% {
+        opacity: 1;
+        transform: scale(1.15);
+    }
+
+    40% {
+        opacity: 0.7;
+        transform: translateY(0);
+    }
+}
+
+
+/* fallback per utenti che preferiscono ridurre le animazioni */
+@media (prefers-reduced-motion: reduce) {
+    .overlay {
+        transition: none;
+    }
+
+    .overlay.hidden {
+        opacity: 0;
+    }
+}

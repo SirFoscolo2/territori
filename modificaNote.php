@@ -12,7 +12,7 @@ $nomePagina = 'ModificaNota';
 ?>
 
 <body>
-    <h1 id="title" class="text-center mt-6">Modifica Interattiva</h1>
+    <h1 id="title" class="text-center mt-3">Modifica Interattiva</h1>
   <style>
     /* CSS per lo sfondo sfocato (backdrop) */
         .modal-backdrop.show {

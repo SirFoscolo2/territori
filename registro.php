@@ -20,7 +20,7 @@ if (isset($_SESSION['username'])) {
     <body>
     <?php require('./navigation.php')?>
 
-        <h1 class="titolo  mt-6 text-center">
+        <h1 class="titolo  mt-3 text-center">
             Registro attivita
         </h1>
         <div class="container">

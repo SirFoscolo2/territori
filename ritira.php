@@ -21,7 +21,7 @@ require('navigation.php');
         $con = new Connection($host, $dbName, $dbUser, $dbPassword);
         $con->connect();
     ?>
-        <div class="container mt-6">
+        <div class="container mt-3">
             <h1 id="title" class="text-center">Ritira Territorio</h1>
             <div class="user-card">
 
@@ -156,8 +156,13 @@ require('navigation.php');
                 $cognome = $utente['cognome'];
                 $data = $utente['data'];
                 $zona = $utente['zona'];
-
-                echo '<div class="user-card" data-user-id="' . $id . '">';
+                $treMesiFa = (new DateTime())->modify('-3 months');
+                $dataDate = new DateTime($data);
+                if($dataDate<$treMesiFa){
+                    echo '<div class="user-card border-danger" data-user-id="' . $id . '">';
+                }else{
+                     echo '<div class="user-card" data-user-id="' . $id . '">';
+                }
                 echo '    <div class="user-top">';
                 echo '      <div class="user-data">';
                 echo '        <div class="badge-number-red" onclick="selezione(' . $id . ')">' . $nomeTer . '</div>';
@@ -168,16 +173,12 @@ require('navigation.php');
                 echo '        </div>';
                 echo '      </div>';
                 echo '      <div class="user-actions">';
-                echo '        <button onclick="toggleDiv(' . $id . ')">';
-                echo '          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">';
-                echo '            <path d="M10.5 8a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />';
-                echo '            <path d="M0 8s3-5.5 8-5.5S16 8 16 8s-3 5.5-8-5.5S0 8 0 8m8 3.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7" />';
-                echo '          </svg>';
+                echo '        <button class="btn btn-secondary show-panel-button border" onclick="toggleDiv(' . $id . ')">';
+                
+                echo '          <i class="bi bi-geo-alt fs-5 text-primary"></i>';
                 echo '        </button>';
-                echo '        <button class="show-panel-button" data-action="upload">';
-                echo '          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-file-earmark-arrow-down-fill" viewBox="0 0 16 16">
-                                <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0M9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1m-1 4v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 11.293V7.5a.5.5 0 0 1 1 0" />
-                            </svg>';
+                echo '        <button class=" btn btn-secondary show-panel-button border" data-action="upload">';
+                echo '          <i class="bi bi-layer-backward text-danger fs-5"></i>';
                 echo '        </button>';
                 echo '      </div>';
                 echo '    </div>';
@@ -211,7 +212,8 @@ require('navigation.php');
 
 
 
-      <button type=\"submit\" class=\"btn btn-secondary\">Ritira</button>
+      <button type=\"submit\" class=\"btn btn-danger\">Ritira</button>
+      <a href=\"riassegna.php?id=$id&nome=$nome&cognome=$cognome\" type=\"submit\" class=\"btn btn-secondary\">Riassegna a $nome</a>
 
     </form>
 

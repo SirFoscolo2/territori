@@ -20,7 +20,7 @@ $nomePagina = 'Link';
         $con = new Connection($host, $dbName, $dbUser, $dbPassword);
         $con->connect();
     ?>
-        <h1 class="mt-6 text-center">
+        <h1 class="mt-3 text-center">
             Link Veloce
         </h1>
         <h2 class="mt-3 text-center">

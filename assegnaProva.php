@@ -63,7 +63,7 @@ require('navigation.php');
     $con->connect();
   ?>
 
-    <div class="container mt-6">
+    <div class="container mt-3">
       <h1 id="title" class="text-center">Assegna Territorio</h1>
       <div class="user-card">
 

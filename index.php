@@ -24,6 +24,7 @@ $nomePagina = 'Home';
             COUNT(*) AS numero_territori_usciti
             FROM stato
             WHERE
+            fuori= 1 AND
             data < DATE_SUB(CURDATE(), INTERVAL 3 MONTH);");
         $assOggi= $con->fetchOne("SELECT
             COUNT(DISTINCT SUBSTRING_INDEX(SUBSTRING_INDEX(value, ',', 3), ',', -1)) AS numero_territori_assegnati_oggi
@@ -50,7 +51,7 @@ $nomePagina = 'Home';
     } else {
         if (isset($_SESSION['errorLog'])) {
             echo '
-                <div class="alert alert-danger d-flex align-items-center w-25 h-3" role="alert">
+                <div class="alert alert-danger position-fixed top-0 start-0 mt-3 mx-3 align-items-center w-75 h-3" role="alert">
                     
                     <div>
                         Email o Password Errate

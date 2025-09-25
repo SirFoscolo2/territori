@@ -77,7 +77,7 @@ require('./function.php');
 
 <body>
     <?php require('navigation.php') ?>
-    <h1 class="text-center mt-6">Storia territorio</h1>
+    <h1 class="text-center mt-3">Storia territorio</h1>
 
     <div id="ntbn" class="notification-banner" style="display: none;">
         <div class="message">Elemento cambiato</div>
