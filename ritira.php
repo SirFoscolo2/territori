@@ -173,7 +173,7 @@ require('navigation.php');
                 echo '        </div>';
                 echo '      </div>';
                 echo '      <div class="user-actions">';
-                echo '        <button class="btn btn-secondary show-panel-button border" onclick="toggleDiv(' . $id . ')">';
+                echo '        <button class="btn btn-secondary  border" onclick="toggleDiv(' . $id . ')">';
                 
                 echo '          <i class="bi bi-geo-alt fs-5 text-primary"></i>';
                 echo '        </button>';
