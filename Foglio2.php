@@ -1,5 +1,8 @@
 <?php
 session_start();
+if (!isset($_SESSION['username'])) {
+    header("location: ./index.php");
+}
 require('./credentials.php');
 require('./Connection.php');
 require('./function.php');

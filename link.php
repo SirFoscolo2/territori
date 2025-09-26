@@ -13,10 +13,10 @@ $nomePagina = 'Link';
     <?php
 
     require('Connection.php');
-    require('navigation.php');
+    
 
     if (isset($_SESSION['username'])) {
-        //require('./navigation.php');
+        require('./navigation.php');
         $con = new Connection($host, $dbName, $dbUser, $dbPassword);
         $con->connect();
     ?>

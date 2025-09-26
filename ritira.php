@@ -7,7 +7,12 @@ $nomePagina = 'Ritiro';
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<?php require('./header.php');
+<?php 
+if (!isset($_SESSION['username'])) {
+    header("location: ./index.php");
+
+}
+require('./header.php');
 require('navigation.php');
 ?>
 

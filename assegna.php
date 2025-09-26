@@ -7,7 +7,12 @@ $nomePagina = 'Assegnazione';
 ?>
 <!DOCTYPE html>
 <html lang="en">
-<?php require('./header.php');
+<?php 
+if (!isset($_SESSION['username'])) {
+    header("location: ./index.php");
+
+}
+require('./header.php');
 require('navigation.php');
 if (isset($_GET['del'])) {
   unset($_SESSION['key']);
@@ -275,7 +280,26 @@ if (isset($_GET['del'])) {
         $data = $utente['data'];
         $zona = $utente['zona'];
         $infoAgg = $utente['infoAgg'];
-        echo '<div class="user-card" data-user-id="' . $id . '">';
+        $timeSliceUscita = $con->fetchAll("select data from uscite where id = ".$utente['id']." order by data desc limit 1");
+        $timeSliceRientro = $con->fetchAll("select data from rientrate where id = ".$utente['id']." order by data desc limit 1");
+        $campagne = $con->fetchAll("select * from campagna");
+        $c = false;
+
+        $dataUscita= $timeSliceUscita[0]['data'];
+        $dataRientro= $timeSliceRientro[0]['data'];
+        foreach ($campagne as $dataC) {
+            if ($dataUscita >= $dataC['data_inizio'] && $dataUscita < $dataC['data_fine'] && $dataRientro >= $dataC['data_inizio']) {
+                $c = true;
+            }
+
+        }
+        if ($c == true) {
+            echo '<div class="user-card border-primary" data-user-id="' . $id . '">';
+            $c = false;
+        } else {
+            echo '<div class="user-card" data-user-id="' . $id . '">';
+        }
+
         echo '    <div class="user-top">';
         echo '      <div class="user-data">';
         echo '        <div class="badge-number">' . $nomeTer . '</div>';
@@ -514,7 +538,7 @@ if (isset($_GET['del'])) {
 
 
   ?>
-  <form action="assegna.php?del=1" id="filtro" method="post" class="mt-2 w-75 m-auto">
+  <form action="assegna.php?del=1" id="filtro" method="post" class="mt-2  w-75 m-auto mb-nav">
     <button class="btn btn-outline-success d-flex justify-content-around w-100 text-center" type="submit">Vedi tutti i territori</button>
 
   </form>
