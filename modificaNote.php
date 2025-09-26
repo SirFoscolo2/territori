@@ -11,7 +11,7 @@ $nomePagina = 'ModificaNota';
 
 ?>
 
-<body>
+<body class="mb-nav">
     <h1 id="title" class="text-center mt-3">Modifica Interattiva</h1>
   <style>
     /* CSS per lo sfondo sfocato (backdrop) */

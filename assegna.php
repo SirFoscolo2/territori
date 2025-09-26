@@ -9,7 +9,7 @@ $nomePagina = 'Assegnazione';
 <html lang="en">
 <?php require('./header.php');
 require('navigation.php');
-if(isset($_GET['del'])){
+if (isset($_GET['del'])) {
   unset($_SESSION['key']);
   unset($_GET['del']);
 }
@@ -18,46 +18,58 @@ if(isset($_GET['del'])){
 <body>
   <style>
     /* CSS per lo sfondo sfocato (backdrop) */
-        .modal-backdrop.show {
-            backdrop-filter: blur(5px); /* Applica la sfocatura */
-            background-color: rgba(0, 0, 0, 0.5); /* Sfondo semi-trasparente */
-        }
+    .modal-backdrop.show {
+      backdrop-filter: blur(5px);
+      /* Applica la sfocatura */
+      background-color: rgba(0, 0, 0, 0.5);
+      /* Sfondo semi-trasparente */
+    }
 
-        /* Opzionale: per centrare il contenuto del modal se necessario, anche se Bootstrap fa un buon lavoro */
-        .modal-dialog-centered {
-            display: flex;
-            align-items: center;
-            min-height: calc(100% - 1rem); /* Assicura che sia centrato anche con poco contenuto */
-        }
+    /* Opzionale: per centrare il contenuto del modal se necessario, anche se Bootstrap fa un buon lavoro */
+    .modal-dialog-centered {
+      display: flex;
+      align-items: center;
+      min-height: calc(100% - 1rem);
+      /* Assicura che sia centrato anche con poco contenuto */
+    }
 
-        /* Stile per i pulsanti all'interno del banner */
-        .banner-button {
-            margin: 0 10px; /* Spazio tra i pulsanti */
-        }
-		.btn-whatsapp {
-            background-color: #25D366; /* Colore verde di WhatsApp */
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-        }
-		.btn-pdf {
-            background-color: #0a58ca; /* Colore verde di WhatsApp */
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-        }
-		.btn-pdf:hover {
-            background-color: #031b3d; /* Colore verde di WhatsApp */
-			color: white;
-        }
-        .btn-whatsapp:hover {
-            background-color: #128C7E; /* Colore al passaggio del mouse */
-            color: white;
-        }
+    /* Stile per i pulsanti all'interno del banner */
+    .banner-button {
+      margin: 0 10px;
+      /* Spazio tra i pulsanti */
+    }
+
+    .btn-whatsapp {
+      background-color: #25D366;
+      /* Colore verde di WhatsApp */
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+
+    .btn-pdf {
+      background-color: #0a58ca;
+      /* Colore verde di WhatsApp */
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+
+    .btn-pdf:hover {
+      background-color: #031b3d;
+      /* Colore verde di WhatsApp */
+      color: white;
+    }
+
+    .btn-whatsapp:hover {
+      background-color: #128C7E;
+      /* Colore al passaggio del mouse */
+      color: white;
+    }
   </style>
-  
+
   <?php
 
   require('./Connection.php');
@@ -180,9 +192,9 @@ if(isset($_GET['del'])){
 
 
 
-    
+
       if (isset($_POST['chiave'])) {
-       
+
         unset($_SESSION['key']);
         $_SESSION['key'] = $_POST['chiave'];
 
@@ -193,31 +205,29 @@ if(isset($_GET['del'])){
         }
       }
       if (isset($_POST['chiave']) && intval($_POST['chiave']) != 0) {
-        
+
         $querybase = "SELECT * FROM stato WHERE fuori = '0' AND id='" . $_POST['chiave'] . "'";
-      } 
-      
+      }
+
       if (isset($_SESSION['key'])) {
-        
+
 
         if (substr($_SESSION['key'], 0, 1) == ":" || substr($_SESSION['key'], 0, 3) == "via") {
           $querybase = "SELECT * FROM stato WHERE fuori = '0' AND infoAgg like '%" .  substr($_SESSION['key'], 1, strlen($_SESSION['key'])) . "%'";
         } else {
           $querybase = "SELECT * FROM stato WHERE fuori = '0' AND nome like '" . $_SESSION['key'] . "%' OR fuori = '0' AND cognome like'" . $_SESSION['key'] . "%' OR fuori = '0' AND nomeTer like'" . $_SESSION['key'] . "%'";
         }
-        
       }
       if (isset($_SESSION['key']) && intval($_SESSION['key']) != 0) {
         $querybase = "SELECT * FROM stato WHERE fuori = '0' AND id='" . $_SESSION['key'] . "'";
-        
       }
-      
 
 
 
 
 
-      
+
+
       if (isset($_POST['o']) && $_POST['o'] == "si") {
 
         $querybase = $querybase . "  ORDER BY id ASC";
@@ -228,15 +238,35 @@ if(isset($_GET['del'])){
 
       // Simulazione di dati provenienti da un database o da un array
       $utenti = $con->fetchAll($querybase);
-    
+      $campagne = $con->fetchAll("select * from campagna");
+
+      $now = 0;
+      $nome = "";
+
+      foreach ($campagne as $dataC) {
+
+        if (date("Y-m-d") > date($dataC['data_inizio']) && date("Y-m-d") < date($dataC['data_fine'])) {
+          $now = 1;
+          $nome = $dataC['nome'];
+        }
+      }
+      //echo $now;
+      if ($now == 1) {
+        $now = 0;
+
+        echo "
+                <div class=\"alert alert-primary\" role=\"alert\">
+                Si sta svolgendo la Campagna Speciale dal nome <b>" . $nome . "</b>
+                </div>
+                ";
+      }
       if (count($utenti) == 0) {
         unset($_SESSION['key']);
         echo "<h2 class=\"text-center\">Non trovo nulla di simile <strong>:(</strong></h2>
       
       ";
-
       }
-      
+
       foreach ($utenti as $utente) {
         $id = $utente['id'];
         $nomeTer = $utente['nomeTer'];
@@ -338,11 +368,11 @@ if(isset($_GET['del'])){
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // JavaScript per mostrare il modal automaticamente all'apertura della pagina
-        document.addEventListener('DOMContentLoaded', function() {
-            var myModal = new bootstrap.Modal(document.getElementById('myCenteredModal'));
-            myModal.show();
-        });
+      // JavaScript per mostrare il modal automaticamente all'apertura della pagina
+      document.addEventListener('DOMContentLoaded', function() {
+        var myModal = new bootstrap.Modal(document.getElementById('myCenteredModal'));
+        myModal.show();
+      });
     </script>
     <script>
       document.addEventListener('DOMContentLoaded', function() {
@@ -407,11 +437,11 @@ if(isset($_GET['del'])){
 
     <?php
     if (isset($_SESSION['just-assegn'])) {
-      $messaggio = "```\nTerritorio n:".$_SESSION['nomeTer'] ."\nVedi piantina: ".$_SESSION['just-assegn'] ."";
-      if($_SESSION['note']!=NULL){
-        $messaggio = $messaggio.note($_SESSION['note']);
+      $messaggio = "```\nTerritorio n:" . $_SESSION['nomeTer'] . "\nVedi piantina: " . $_SESSION['just-assegn'] . "";
+      if ($_SESSION['note'] != NULL) {
+        $messaggio = $messaggio . note($_SESSION['note']);
       }
-      $messaggio = $messaggio."```";
+      $messaggio = $messaggio . "```";
       $messaggio = urlencode($messaggio);
       echo '
     <div class="modal fade" id="myCenteredModal" tabindex="-1" aria-labelledby="myCenteredModalLabel" aria-hidden="true">
@@ -423,12 +453,12 @@ if(isset($_GET['del'])){
                 </div>
                 <div class="modal-body text-center ">
                     <div class="container text-center mb-3">
-						<a href="https://wa.me/?text='.$messaggio.'" class="btn btn-whatsapp">
+						<a href="https://wa.me/?text=' . $messaggio . '" class="btn btn-whatsapp">
 							<i class="fab fa-whatsapp"></i> Invia su WhatsApp
 						</a>
 					</div>
 					<div  class="container text-center ">
-						<a href="'.$_SESSION['just-assegn'].'" class="btn btn-pdf"> Vai al PDF</a>
+						<a href="' . $_SESSION['just-assegn'] . '" class="btn btn-pdf"> Vai al PDF</a>
 					</div>
                 </div>
                 <div class="modal-footer justify-content-center">

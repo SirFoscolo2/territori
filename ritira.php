@@ -139,6 +139,34 @@ require('navigation.php');
 
             // Simulazione di dati provenienti da un database o da un array
             $utenti = $con->fetchAll($querybase);
+
+            $campagne = $con->fetchAll("select * from campagna");
+            
+            $now = 0;
+            $nome="";
+            
+            foreach ($campagne as $dataC) {
+
+                if (date("Y-m-d") > date($dataC['data_inizio']) && date("Y-m-d") < date($dataC['data_fine'])) {
+                    $now = 1;
+                    $nome = $dataC['nome'];
+                    
+                }
+            }
+            //echo $now;
+            if($now==1){
+                $now=0;
+
+                echo"
+                <div class=\"alert alert-primary\" role=\"alert\">
+                Si sta svolgendo la Campagna Speciale dal nome <b>".$nome."</b>
+                </div>
+                ";
+            }
+
+
+
+
             if (count($utenti) == 0) {
                 echo "<h2 class=\"text-center\">Non trovo nulla di simile <strong>:(</strong></h2>
       
@@ -158,10 +186,25 @@ require('navigation.php');
                 $zona = $utente['zona'];
                 $treMesiFa = (new DateTime())->modify('-3 months');
                 $dataDate = new DateTime($data);
-                if($dataDate<$treMesiFa){
+                if ($dataDate < $treMesiFa) {
                     echo '<div class="user-card border-danger" data-user-id="' . $id . '">';
-                }else{
-                     echo '<div class="user-card" data-user-id="' . $id . '">';
+                } else {
+
+                    $campagne = $con->fetchAll("select * from campagna");
+                    $c = false;
+                    $now = [false, ""];
+                    foreach ($campagne as $dataC) {
+                        if ($data >= $dataC['data_inizio'] && $data < $dataC['data_fine']) {
+                            $c = true;
+                        }
+
+                    }
+                    if ($c == true) {
+                        echo '<div class="user-card border-primary" data-user-id="' . $id . '">';
+                        $c = false;
+                    } else {
+                        echo '<div class="user-card" data-user-id="' . $id . '">';
+                    }
                 }
                 echo '    <div class="user-top">';
                 echo '      <div class="user-data">';
@@ -174,7 +217,7 @@ require('navigation.php');
                 echo '      </div>';
                 echo '      <div class="user-actions">';
                 echo '        <button class="btn btn-secondary  border" onclick="toggleDiv(' . $id . ')">';
-                
+
                 echo '          <i class="bi bi-geo-alt fs-5 text-primary"></i>';
                 echo '        </button>';
                 echo '        <button class=" btn btn-secondary show-panel-button border" data-action="upload">';
@@ -264,11 +307,12 @@ require('navigation.php');
 
 
         <script>
-            let sele= [];
-            for(let i = 0; i<140; ++i){
+            let sele = [];
+            for (let i = 0; i < 140; ++i) {
                 sele.push(false);
             }
-            let n= 0;
+            let n = 0;
+
             function toggleDiv(id) {
 
                 const content = document.getElementById(id);
@@ -288,54 +332,55 @@ require('navigation.php');
                 content.style.top = "-100px";
                 content.style.opacity = "0";
             }
-            function t2(array){
-                let str= "";
-                for(let i = 0; i<array.length;++i ){
-                    if(array[i]==true){
-                        str = str+i+";";
+
+            function t2(array) {
+                let str = "";
+                for (let i = 0; i < array.length; ++i) {
+                    if (array[i] == true) {
+                        str = str + i + ";";
                     }
                 }
-                
+
                 return str;
             }
-            function t(array){
-                let str= "";
-                let c= false;
-                for(let i = 0; i<array.length;++i ){
-                    
-                    if(array[i]==true){
-                        c= true;
-                        str = str+"<li class=\"list-group-item text-center\">"+ i+"</li>";
+
+            function t(array) {
+                let str = "";
+                let c = false;
+                for (let i = 0; i < array.length; ++i) {
+
+                    if (array[i] == true) {
+                        c = true;
+                        str = str + "<li class=\"list-group-item text-center\">" + i + "</li>";
                     }
                     console.log(array);
                 }
-                if(c==true){
-                    str= str+"<form method=\"POST\" action=\"ritiraEngine.php\"><input class=\"btn bg-warning  mt-2 w-100\" type=\"submit\" value=\"Ritira\"><input name=\"infos\" type=\"hidden\" value=\"" +t2(sele)+"\"></form>";
+                if (c == true) {
+                    str = str + "<form method=\"POST\" action=\"ritiraEngine.php\"><input class=\"btn bg-warning  mt-2 w-100\" type=\"submit\" value=\"Ritira\"><input name=\"infos\" type=\"hidden\" value=\"" + t2(sele) + "\"></form>";
 
                 }
-                
+
 
                 return str;
             }
 
-            function selezione(id){
-                if(document.querySelector(`[data-user-id="${id}"]`).style.border == "1px solid red"){
+            function selezione(id) {
+                if (document.querySelector(`[data-user-id="${id}"]`).style.border == "1px solid red") {
                     const userDiv = document.querySelector(`[data-user-id="${id}"]`);
                     userDiv.style.border = "1px solid #ddd";
-                    sele[id]= false; 
-                    document.getElementById("contenitoree").innerHTML=t(sele);
-                    
-                }else{
+                    sele[id] = false;
+                    document.getElementById("contenitoree").innerHTML = t(sele);
+
+                } else {
                     const userDiv = document.querySelector(`[data-user-id="${id}"]`);
-                    userDiv.style.border = "1px solid red"; 
-                    sele[id]= true;
+                    userDiv.style.border = "1px solid red";
+                    sele[id] = true;
                     console.log(sele);
-                    document.getElementById("contenitoree").innerHTML=t(sele);
+                    document.getElementById("contenitoree").innerHTML = t(sele);
                 }
 
 
             }
-            
         </script>
         <ul class="list-group fixed-bottom right-0  p-3 w-50" id="contenitoree">
 
@@ -383,7 +428,7 @@ require('navigation.php');
         header("location: ./index.php");
     }
 
-   
+
 
 
     ?>

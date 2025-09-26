@@ -11,7 +11,7 @@ $nomePagina = 'Note';
 
 ?>
 
-<body>
+<body class="mb-nav">
   <style>
     /* CSS per lo sfondo sfocato (backdrop) */
         .modal-backdrop.show {

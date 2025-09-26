@@ -92,11 +92,6 @@
     <div class="stat-value"><?= $assOggi['numero_territori_assegnati_oggi'] ?></div>
     <div class="stat-change text-primary"><?php
 
-                                          if (intval($assOggiPlus['differenza_assegnazioni']) > 0) {
-                                            echo "+";
-                                          } else {
-                                            echo "-";
-                                          }
                                           echo $assOggiPlus['differenza_assegnazioni'];
                                           ?> vs ieri</div>
   </div>
@@ -116,10 +111,10 @@
         <div class="action-label text-primary">Link Veloce</div>
       </div>
     </a>
-    <a href="registro.php" class="action-btn">
+    <a href="campagna.php" class="action-btn">
       <div class="action-btn text-success">
-        <i class="bi bi-journal-text"></i>
-        <div class="action-label text-success">Registro</div>
+        <i class="bi bi-globe-americas"></i>
+        <div class="action-label text-success">Campagna</div>
       </div>
     </a>
     <a href="Foglio2.php" class="action-btn">

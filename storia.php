@@ -92,7 +92,7 @@ require('./function.php');
     </form>
     <div id="blurDiv" ></div>
 
-    <div class="riga" id="principale">
+    <div class="riga mb-nav" id="principale">
 
 
 

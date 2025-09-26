@@ -191,11 +191,11 @@
                 </div>
 
                 <div class="col-12 col-md-6 col-lg-4">
-                    <a href="#" class="text-decoration-none">
+                    <a href="campagna.php" class="text-decoration-none">
                         <div class="card h-100 shadow-sm border-0 text-center p-3 card-clean-style">
                             <div class="card-body">
-                                <i class="bi bi-clipboard-data-fill display-4 mb-2 text-danger"></i>
-                                <h5 class="card-title mt-2 mb-0">Media percorrenza</h5>
+                                <i class="bi bi-globe-americas"></i>
+                                <h5 class="card-title mt-2 mb-0">Campagna Speciale</h5>
                             </div>
                         </div>
                     </a>
@@ -229,7 +229,7 @@
 
     </div>
 </div>
-<div class="fixed-bottom d-flex justify-content-center mb-4">
+<div class="fixed-bottom d-flex justify-content-center mb-2">
     <nav class="nav-bar-pill shadow-lg">
         <ul class="nav">
             <li class="nav-item">
