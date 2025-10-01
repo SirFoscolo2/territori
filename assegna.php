@@ -441,6 +441,10 @@ if (isset($_GET['del'])) {
       if ($_SESSION['note'] != NULL) {
         $messaggio = $messaggio . note($_SESSION['note']);
       }
+      if(isset($_SESSION['maps'])){
+         $messaggio = $messaggio ."\n\nPortami sul Territorio --->".$_SESSION['maps']."\n\nInfo: I link che portano sul territorio portano in un punto casuale situato sul territorio, spesso coincidente con parcheggi o punti di riferimento.\nBuon Servizio!!";
+
+      }
       $messaggio = $messaggio . "```";
       $messaggio = urlencode($messaggio);
       echo '

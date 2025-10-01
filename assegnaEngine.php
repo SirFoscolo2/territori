@@ -53,6 +53,7 @@
             }
             
             $_SESSION['just-assegn']= $rowF['link'];
+            $_SESSION['maps']= $rowF['maps'];
             $_SESSION['nomeTer']= $rowF['nomeTer'];
             $_SESSION['note']= $rowF['note'];
             header("location: ./assegna.php");
